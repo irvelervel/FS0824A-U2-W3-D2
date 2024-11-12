@@ -43,3 +43,41 @@ document.querySelector('main').appendChild(div)
 
 // localStorage.removeItem('username') // questa riga ELIMINA una chiave
 // localStorage.clear() // TABULA RASA del localStorage
+
+// vediamo ora come sia possibile "stringhifizzare" in maniera funzionante e non distruttiva entità dati complesse, come potrebbero essere oggetti o array.
+localStorage.setItem('object', { name: 'Stefano' })
+// la riga superiore va a inserire nel localStorage una chiave con valore "[object Object]"
+
+// metodo corretto:
+localStorage.setItem('object-correct', JSON.stringify({ name: 'Stefano' }))
+// ora il valore di questa chiave è l'oggetto reso stringa in formato JSON
+// l'oggetto ora è salvato nella sua variante stringa "corretta"
+// da questa stringa è sempre possibile ritornare alla sua versione "originale"
+
+const originalObject = JSON.parse(localStorage.getItem('object-correct'))
+console.log(originalObject)
+// con questa tecnica di JSON.stringify() + JSON.parse() voi potete rendere stringa e viceversa qualsiasi entità dati complessa!
+
+const arrayOfObjects = [
+  {
+    name: 'Pedro',
+    species: 'dog',
+  },
+  {
+    name: 'Pascal',
+    species: 'cat',
+  },
+  {
+    name: 'Jamie',
+    species: 'Lannister',
+  },
+]
+
+// localStorage.setItem('GoT', arrayOfObjects) // [object Object]
+localStorage.setItem('GoT', JSON.stringify(arrayOfObjects)) // [{"name": "Pedro", etc.}]
+
+// abbiamo salvato correttamente l'array di oggetti nel localStorage, in formato stringa JSON
+// quando lo recupererò, sarà sempre una stringa!
+const arrayAsAString = localStorage.getItem('GoT')
+const arrayAgain = JSON.parse(arrayAsAString) // questo è l'array originale!
+console.log(arrayAgain[1])
